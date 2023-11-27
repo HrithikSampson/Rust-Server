@@ -40,5 +40,6 @@ fn handle_connection(mut stream:TcpStream){
     } else {
         response = "HTTP/1.1 404 Not Found\r\n\r\n".to_string();
     }
+    println!("{:#?}",response);
     stream.write_all(response.as_bytes()).unwrap();
 }
