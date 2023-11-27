@@ -28,11 +28,11 @@ fn handle_connection(mut stream:TcpStream){
     let bind = iter.collect::<Vec<String>>();
     let path = bind.get(1).unwrap();
     
-    let mut response:String = match path.as_str(){
-        "/"=> "HTTP/1.1 200 OK\r\n\r\n".to_string(),
-        _ => "".to_string()
-    };
-    if path.starts_with("/echo") == true {
+    let mut response:String = String::new();
+    if path.as_str() == "/"{
+        response = "HTTP/1.1 200 OK\r\n\r\n".to_string();
+    }
+    else if path.starts_with("/echo") == true {
         let x:Vec<&str> = path.split('/').collect();
         let p = x.get(1).unwrap().len().to_string();
         let q = x.get(1).unwrap();
