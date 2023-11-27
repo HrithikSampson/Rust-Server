@@ -32,7 +32,7 @@ fn handle_connection(mut stream:TcpStream){
         "/"=> "HTTP/1.1 200 OK\r\n\r\n".to_string(),
         _ => "".to_string()
     };
-    if path.to_string().starts_with("/echo") == true {
+    if path.starts_with("/echo") == true {
         let x:Vec<&str> = path.split('/').collect();
         let p = x.get(1).unwrap().len().to_string();
         let q = x.get(1).unwrap();
