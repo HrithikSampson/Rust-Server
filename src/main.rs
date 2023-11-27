@@ -4,6 +4,7 @@ use std::net::TcpListener;
 //use std::io::prelude;
 use std::io::BufReader;
 use std::net::TcpStream;
+use std::format;
 fn main() {
     let listener = TcpListener::bind("127.0.0.1:4221").unwrap();
     // listener is a iterator to a array of streams
@@ -29,7 +30,15 @@ fn handle_connection(mut stream:TcpStream){
     
     let response = match path.as_str(){
         "/"=> "HTTP/1.1 200 OK\r\n\r\n",
-        _ => "HTTP/1.1 404 Not Found\r\n\r\n"
+        y => {
+            if y.to_string().starts_with("/echo") == true {
+                let x:Vec<&str> = y.split('/').collect();
+                let p = (x.get(1).unwrap().len().to_string());
+                let q = x.get(1).unwrap();
+                format!("HTTP/1.1 200 OK\r\n\r\nContent-Type: text/plain\r\nContent-Length: {}\r\n\r\n{}",p.as_str(),q);
+            }
+            "HTTP/1.1 404 Not Found\r\n\r\n"
+        }
     };
     stream.write_all(response.as_bytes()).unwrap();
 }
