@@ -33,11 +33,12 @@ fn handle_connection(mut stream:TcpStream){
         y => {
             if y.to_string().starts_with("/echo") == true {
                 let x:Vec<&str> = y.split('/').collect();
-                let p = (x.get(1).unwrap().len().to_string());
+                let p = x.get(1).unwrap().len().to_string();
                 let q = x.get(1).unwrap();
                 format!("HTTP/1.1 200 OK\r\n\r\nContent-Type: text/plain\r\nContent-Length: {}\r\n\r\n{}",p.as_str(),q);
             }
-            "HTTP/1.1 404 Not Found\r\n\r\n"
+                "HTTP/1.1 404 Not Found\r\n\r\n"
+            
         }
     };
     stream.write_all(response.as_bytes()).unwrap();
