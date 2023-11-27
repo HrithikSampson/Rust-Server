@@ -28,17 +28,17 @@ fn handle_connection(mut stream:TcpStream){
     let bind = iter.collect::<Vec<String>>();
     let path = bind.get(1).unwrap();
     
-    let mut response = match path.as_str(){
-        "/"=> "HTTP/1.1 200 OK\r\n\r\n",
-        _ => ""
+    let mut response:String = match path.as_str(){
+        "/"=> "HTTP/1.1 200 OK\r\n\r\n".to_string(),
+        _ => "".to_string()
     };
     if path.to_string().starts_with("/echo") == true {
-        let x:Vec<&str> = y.split('/').collect();
+        let x:Vec<&str> = path.split('/').collect();
         let p = x.get(1).unwrap().len().to_string();
         let q = x.get(1).unwrap();
-        response = format!("HTTP/1.1 200 OK\r\n\r\nContent-Type: text/plain\r\nContent-Length: {}\r\n\r\n{}",p.as_str(),q).as_str();
+        response = format!("HTTP/1.1 200 OK\r\n\r\nContent-Type: text/plain\r\nContent-Length: {}\r\n\r\n{}",(p.as_str()),q);
     } else {
-        response = "HTTP/1.1 404 Not Found\r\n\r\n";
+        response = "HTTP/1.1 404 Not Found\r\n\r\n".to_string();
     }
     stream.write_all(response.as_bytes()).unwrap();
 }
