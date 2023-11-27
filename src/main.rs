@@ -1,7 +1,7 @@
 use std::io::BufRead;
 use std::io::Write;
 use std::net::TcpListener;
-use std::io::prelude;
+//use std::io::prelude;
 use std::io::BufReader;
 use std::net::TcpStream;
 fn main() {
@@ -22,6 +22,14 @@ fn handle_connection(mut stream:TcpStream){
                                        .take_while(|el| !el.is_empty())
                                        .collect();
     println!("{:#?}",http_request);
-    let response = "HTTP/1.1 200 OK\r\n\r\n";
+    
+    let iter = http_request.get(0).unwrap().split(' ').map(|el|el.to_string());
+    let bind = iter.collect::<Vec<String>>();
+    let path = bind.get(1).unwrap();
+    
+    let response = match path.as_str(){
+        "/"=> "HTTP/1.1 200 OK\r\n\r\n",
+        _ => "HTTP/1.1 404 Not Found\r\n\r\n"
+    };
     stream.write_all(response.as_bytes()).unwrap();
 }
