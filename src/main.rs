@@ -20,6 +20,7 @@ pub fn get_dir() -> Option<String> {
     return None;
 }
 fn main() {
+    println!("{:?}",std::env::args().collect());
     let listener = TcpListener::bind("127.0.0.1:4221").unwrap();
     // listener is a iterator to a array of streams
     
