@@ -99,7 +99,7 @@ fn handle_connection(mut stream:TcpStream,directory: Option<String>){
             //     }, 
             //     Err(_) => {
 
-    let mut file = File::create(&filepath).unwrap();
+    let mut file = File::create(&filepath).unwrap_or_else(|err| panic!("error: {}",err));
     file.write_all(contents.as_bytes()).unwrap();
 
     let response = "HTTP/1.1 201 Created\r\n\r\n";
