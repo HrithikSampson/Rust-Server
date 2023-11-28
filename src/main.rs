@@ -102,8 +102,7 @@ fn handle_connection(mut stream:TcpStream,directory: Option<String>){
     let mut file = File::create(&filepath).unwrap_or_else(|err| panic!("error: {}",err));
     file.write_all(contents.as_bytes()).unwrap_or_else(|err| panic!("error1: {}",err));
 
-    let response = "HTTP/1.1 201 Created\r\n\r\n";
-    stream.write_all(response.as_bytes()).unwrap();
+    response = "HTTP/1.1 201 Created\r\n\r\n".to_string();
             //     }
             // };
             // println!("{}",response);
