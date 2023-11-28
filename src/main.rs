@@ -66,7 +66,7 @@ fn handle_connection(mut stream:TcpStream,directory: Option<String>){
                 Ok(mut file) => {
                     let mut contents = String::new();
                     file.read_to_string(&mut contents).unwrap();
-                    format!("HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\n\r\n{}",contents)
+                    format!("HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\nContent-Length:{}\r\n\r\n{}",contents.len(),contents)
                 },
                 Err(_) => "HTTP/1.1 404 Not Found\r\n\r\n".to_string(),
             };
