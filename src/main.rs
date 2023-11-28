@@ -5,6 +5,7 @@ use std::net::TcpListener;
 use std::io::BufReader;
 use std::net::TcpStream;
 use std::format;
+use std::thread;
 fn main() {
     let listener = TcpListener::bind("127.0.0.1:4221").unwrap();
     // listener is a iterator to a array of streams
@@ -13,7 +14,7 @@ fn main() {
         
         println!("Connection established");
         // stream is a connection attempt and when os limit reaches and throws error
-        handle_connection(stream);
+        thread::spawn(||handle_connection(stream));
     }
 }
 fn handle_connection(mut stream:TcpStream){
