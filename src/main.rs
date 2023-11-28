@@ -14,7 +14,7 @@ pub fn get_dir() -> Option<String> {
         .iter()
         .position(|arg| arg == "--directory");
         
-    if let Some(max)=index {
+    if let Some(_)=index {
         return Some(arguments[index.unwrap() + 1].to_string())
     }
     return None;
@@ -55,19 +55,24 @@ fn handle_connection(mut stream:TcpStream,directory: Option<String>){
         let p = q.len().to_string();
         response = format!("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: {}\r\n\r\n{}\r\n",(p.as_str()),q);
     } else if path.starts_with("/files") == true {
-        let filename = http_request.get(1).unwrap().split_once("/").unwrap().1;
-        let file_result = File::open(directory.clone().unwrap()+"/"+filename);
-        println!("{}",directory.unwrap());
-        println!("{}",filename);
+        if let Some(_) = directory {
+            let filename = http_request.get(1).unwrap().split_once("/").unwrap().1;
+            let file_result = File::open(directory.clone().unwrap()+"/"+filename);
+            println!("{}",directory.unwrap());
+            println!("{}",filename);
 
-        let response = match file_result {
-            Ok(mut file) => {
-                let mut contents = String::new();
-                file.read_to_string(&mut contents).unwrap();
-                format!("HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\n\r\n{}",contents)
-            },
-            Err(error) => "HTTP/1.1 404 Not Found\r\n\r\n".to_string(),
-        };
+            response = match file_result {
+                Ok(mut file) => {
+                    let mut contents = String::new();
+                    file.read_to_string(&mut contents).unwrap();
+                    format!("HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\n\r\n{}",contents)
+                },
+                Err(_) => "HTTP/1.1 404 Not Found\r\n\r\n".to_string(),
+            };
+        }
+        else{
+            response = "HTTP/1.1 404 Not Found\r\n\r\n".to_string();
+        }
     } else {
         response = "HTTP/1.1 404 Not Found\r\n\r\n".to_string();
     }
