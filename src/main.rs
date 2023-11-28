@@ -81,7 +81,7 @@ fn handle_connection(mut stream:TcpStream,directory: Option<String>){
             let filename = path[1..].split_once("/").unwrap().1;
             println!("{:?}",directory);
             println!("{}",filename);
-            let filepath = directory.clone().unwrap()+"/"+filename;
+            let filepath = format!("{}{}", directory.unwrap(), filename);
             println!("{}",filepath);
             //let file_result = File::open(&filepath);
             let mut content_buffer = [0;512];
