@@ -81,26 +81,26 @@ fn handle_connection(mut stream:TcpStream,directory: Option<String>){
             let filename = path[1..].split_once("/").unwrap().1;
             println!("{:?}",directory);
             println!("{}",filename);
-            let filepath = directory.clone().unwrap()+"/"+filename;
+            let filepath = directory.clone().unwrap()+filename;
             println!("{}",filepath);
-            let file_result = File::open(&filepath);
+            //let file_result = File::open(&filepath);
             let mut content_buffer = [0;512];
             stream.read(&mut content_buffer).unwrap();
             let contents = String::from_utf8_lossy(&content_buffer);
-            println!("{:?}",file_result);
-            response = match file_result {
-                Ok(mut file) => {
+            //println!("{:?}",file_result);
+            // response = match file_result {
+            //     Ok(mut file) => {
 
-                    file.write_all(&contents.as_bytes()).unwrap();
-                    "HTTP/1.1 201 Created\r\n\r\n".to_string()
-                }, 
-                Err(_) => {
+            //         file.write_all(&contents.as_bytes()).unwrap();
+            //         "HTTP/1.1 201 Created\r\n\r\n".to_string()
+            //     }, 
+            //     Err(_) => {
                     let mut file = File::create(&filepath).unwrap();
                     file.write_all(&contents.as_bytes()).unwrap();
-                    "HTTP/1.1 201 Created\r\n\r\n".to_string()
-                }
-            };
-            println!("{}",response);
+                    response = "HTTP/1.1 201 Created\r\n\r\n".to_string()
+            //     }
+            // };
+            // println!("{}",response);
         }
     } else {
         response = "HTTP/1.1 404 Not Found\r\n\r\n".to_string();
