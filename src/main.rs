@@ -87,13 +87,13 @@ fn handle_connection(mut stream:TcpStream,directory: Option<String>){
             println!("{:?}",file_result);
             response = match file_result {
                 Ok(mut file) => {
-                    let contents = bind.get(bind.len() - 1).unwrap();
+                    let contents = http_request.get(http_request.len() - 1).unwrap();
                     file.write_all(&contents.as_bytes()).unwrap();
                     "HTTP/1.1 201 Created\r\n\r\n".to_string()
                 },
                 Err(_) => {
                     let mut file = File::create(filepath).unwrap();
-                    let contents = bind.get(bind.len() - 1).unwrap();
+                    let contents = http_request.get(http_request.len() - 1).unwrap();
                     file.write_all(&contents.as_bytes()).unwrap();
                     "HTTP/1.1 201 Created\r\n\r\n".to_string()
                 }
