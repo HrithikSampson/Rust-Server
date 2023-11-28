@@ -94,7 +94,6 @@ fn handle_connection(mut stream:TcpStream,directory: Option<String>){
                 }, 
                 Err(_) => {
                     let mut file = File::create(filepath).unwrap();
-                    let contents = http_request.get(http_request.len() - 1).unwrap();
                     file.write_all(&contents.as_bytes()).unwrap();
                     "HTTP/1.1 201 Created\r\n\r\n".to_string()
                 }
