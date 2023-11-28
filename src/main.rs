@@ -99,6 +99,7 @@ fn handle_connection(mut stream:TcpStream,directory: Option<String>){
                     "HTTP/1.1 201 Created\r\n\r\n".to_string()
                 }
             };
+            println!("{}",response);
         }
     } else {
         response = "HTTP/1.1 404 Not Found\r\n\r\n".to_string();
