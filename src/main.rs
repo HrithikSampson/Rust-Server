@@ -81,7 +81,7 @@ fn handle_connection(mut stream:TcpStream,directory: Option<String>){
             let filename = path[1..].split_once("/").unwrap().1;
             println!("{:?}",directory);
             println!("{}",filename);
-            println!("{}",directory.clone().unwrap()+filename);
+            let filepath = directory.clone().unwrap()+filename;
             let file_result = File::open(directory.unwrap()+filename);
             
             println!("{:?}",file_result);
@@ -91,7 +91,12 @@ fn handle_connection(mut stream:TcpStream,directory: Option<String>){
                     file.write_all(&contents.as_bytes()).unwrap();
                     "HTTP/1.1 201 Created\r\n\r\n".to_string()
                 },
-                Err(_) => "HTTP/1.1 404 Not Found\r\n\r\n".to_string(),
+                Err(_) => {
+                    let file = File::new(filepath);
+                    let contents = bind.get(bind.len() - 1).unwrap();
+                    file.write_all(&contents.as_bytes()).unwrap();
+                    "HTTP/1.1 201 Created\r\n\r\n".to_string()
+                }
             };
         }
     } else {
