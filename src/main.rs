@@ -28,12 +28,17 @@ fn handle_connection(mut stream:TcpStream){
     let bind = iter.collect::<Vec<String>>();
     let path = bind.get(1).unwrap();
     
-    let mut response:String = String::new();
+    let mut response= String::new();
     if path.as_str() == "/"{
         response = "HTTP/1.1 200 OK\r\n\r\n".to_string();
     }
     else if path.starts_with("/echo") == true {
-        let (x,q) = path[1..].split_once('/').unwrap();
+        let q = path[1..].split_once('/').unwrap();
+        let p = q.1.len().to_string();
+        response = format!("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: {}\r\n\r\n{}\r\n",(p.as_str()),q.1);
+    }
+    else if path.starts_with("/user-agent") == true {
+        let q = http_request.get(2).unwrap().split_once(" ").unwrap().1;
         let p = q.len().to_string();
         response = format!("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: {}\r\n\r\n{}\r\n",(p.as_str()),q);
     } else {
