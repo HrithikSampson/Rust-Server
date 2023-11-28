@@ -1,23 +1,34 @@
 use std::io::BufRead;
+use std::io::Read;
 use std::io::Write;
 use std::net::TcpListener;
+use std::fs::File;
 //use std::io::prelude;
 use std::io::BufReader;
 use std::net::TcpStream;
 use std::format;
 use std::thread;
+pub fn get_dir() -> String {
+    let arguments: Vec<String> = std::env::args().collect();
+    let index = arguments
+        .iter()
+        .position(|arg| arg == "--directory")
+        .unwrap();
+    arguments[index + 1].to_string()
+}
 fn main() {
     let listener = TcpListener::bind("127.0.0.1:4221").unwrap();
     // listener is a iterator to a array of streams
+    
     for stream in listener.incoming(){
         let stream = stream.unwrap();// overshadowing stream
-        
+        let directory = get_dir();
         println!("Connection established");
         // stream is a connection attempt and when os limit reaches and throws error
-        thread::spawn(||handle_connection(stream));
+        thread::spawn(||handle_connection(stream,directory));
     }
 }
-fn handle_connection(mut stream:TcpStream){
+fn handle_connection(mut stream:TcpStream,directory: String){
     let http_request: Vec<_> = BufReader::new(&mut stream)
                                        .lines()
                                        .map(|el|el.unwrap())
@@ -32,16 +43,26 @@ fn handle_connection(mut stream:TcpStream){
     let mut response= String::new();
     if path.as_str() == "/"{
         response = "HTTP/1.1 200 OK\r\n\r\n".to_string();
-    }
-    else if path.starts_with("/echo") == true {
+    } else if path.starts_with("/echo") == true {
         let q = path[1..].split_once('/').unwrap();
         let p = q.1.len().to_string();
         response = format!("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: {}\r\n\r\n{}\r\n",(p.as_str()),q.1);
-    }
-    else if path.starts_with("/user-agent") == true {
+    } else if path.starts_with("/user-agent") == true {
         let q = http_request.get(2).unwrap().split_once(" ").unwrap().1;
         let p = q.len().to_string();
         response = format!("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: {}\r\n\r\n{}\r\n",(p.as_str()),q);
+    } else if path.starts_with("/files") == true {
+        let filename = http_request.get(2).unwrap().split_once("/").unwrap().1;
+        let file_result = File::open(directory+"/"+filename);
+
+        let response = match file_result {
+            Ok(mut file) => {
+                let mut contents = String::new();
+                file.read_to_string(&mut contents).unwrap();
+                format!("HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\n\r\n{}",contents)
+            },
+            Err(error) => "HTTP/1.1 404 Not Found\r\n\r\n".to_string(),
+        };
     } else {
         response = "HTTP/1.1 404 Not Found\r\n\r\n".to_string();
     }
