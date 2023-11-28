@@ -42,7 +42,7 @@ fn handle_connection(mut stream:TcpStream,directory: Option<String>){
     let iter = http_request.get(0).unwrap().split(' ').map(|el|el.to_string());
     let bind = iter.collect::<Vec<String>>();
     let path = bind.get(1).unwrap();
-    
+    let method: &String = bind.get(0).unwrap();
     let mut response= String::new();
     if path.as_str() == "/"{
         response = "HTTP/1.1 200 OK\r\n\r\n".to_string();
@@ -55,23 +55,28 @@ fn handle_connection(mut stream:TcpStream,directory: Option<String>){
         let p = q.len().to_string();
         response = format!("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: {}\r\n\r\n{}\r\n",(p.as_str()),q);
     } else if path.starts_with("/files") == true {
-        if let Some(_) = directory {
-            let filename = path[1..].split_once("/").unwrap().1;
-            println!("{:?}",directory);
-            println!("{}",filename);
+        if method == "GET" {
+            if let Some(_) = directory {
+                let filename = path[1..].split_once("/").unwrap().1;
+                println!("{:?}",directory);
+                println!("{}",filename);
 
-            let file_result = File::open(directory.unwrap()+"/"+filename);
+                let file_result = File::open(directory.unwrap()+"/"+filename);
 
-            response = match file_result {
-                Ok(mut file) => {
-                    let mut contents = String::new();
-                    file.read_to_string(&mut contents).unwrap();
-                    format!("HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\nContent-Length:{}\r\n\r\n{}",contents.len(),contents)
-                },
-                Err(_) => "HTTP/1.1 404 Not Found\r\n\r\n".to_string(),
-            };
+                response = match file_result {
+                    Ok(mut file) => {
+                        let mut contents = String::new();
+                        file.read_to_string(&mut contents).unwrap();
+                        format!("HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\nContent-Length:{}\r\n\r\n{}",contents.len(),contents)
+                    },
+                    Err(_) => "HTTP/1.1 404 Not Found\r\n\r\n".to_string(),
+                };
+            }
+            else{
+                response = "HTTP/1.1 404 Not Found\r\n\r\n".to_string();
+            }
         }
-        else{
+        else {
             response = "HTTP/1.1 404 Not Found\r\n\r\n".to_string();
         }
     } else {
