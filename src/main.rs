@@ -72,12 +72,24 @@ fn handle_connection(mut stream:TcpStream,directory: Option<String>){
                     Err(_) => "HTTP/1.1 404 Not Found\r\n\r\n".to_string(),
                 };
             }
-            else{
-                response = "HTTP/1.1 404 Not Found\r\n\r\n".to_string();
+            else if let None = directory {
+                let filename = path[1..].split_once("/").unwrap().1;
+                println!("{:?}",directory);
+                println!("{}",filename);
+
+                let file_result = File::open(directory.unwrap()+"/"+filename);
+                response = match file_result {
+                    Ok(mut file) => {
+                        let contents = bind.get(bind.len() - 1).unwrap();
+                        file.write_all(&contents.as_bytes()).unwrap();
+                        "HTTP/1.1 201 Created\r\n\r\n".to_string()
+                    },
+                    Err(_) => "HTTP/1.1 404 Not Found\r\n\r\n".to_string(),
+                };
             }
         }
         else {
-            response = "HTTP/1.1 404 Not Found\r\n\r\n".to_string();
+            response = "HTTP/1.1 201 Not Found\r\n\r\n".to_string();
         }
     } else {
         response = "HTTP/1.1 404 Not Found\r\n\r\n".to_string();
