@@ -56,7 +56,9 @@ fn handle_connection(mut stream:TcpStream,directory: Option<String>){
         response = format!("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: {}\r\n\r\n{}\r\n",(p.as_str()),q);
     } else if path.starts_with("/files") == true {
         let filename = http_request.get(2).unwrap().split_once("/").unwrap().1;
-        let file_result = File::open(directory.unwrap()+"/"+filename);
+        let file_result = File::open(directory.clone().unwrap()+"/"+filename);
+        println!("{}",directory.unwrap());
+        println!("{}",filename);
 
         let response = match file_result {
             Ok(mut file) => {
