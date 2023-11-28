@@ -89,7 +89,7 @@ fn handle_connection(mut stream:TcpStream,directory: Option<String>){
             }
         }
         else {
-            response = "HTTP/1.1 201 Not Found\r\n\r\n".to_string();
+            response = "HTTP/1.1 404 Not Found\r\n\r\n".to_string();
         }
     } else {
         response = "HTTP/1.1 404 Not Found\r\n\r\n".to_string();
