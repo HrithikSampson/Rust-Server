@@ -56,7 +56,7 @@ fn handle_connection(mut stream:TcpStream,directory: Option<String>){
         response = format!("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: {}\r\n\r\n{}\r\n",(p.as_str()),q);
     } else if path.starts_with("/files") == true {
         if let Some(_) = directory {
-            let filename = http_request.get(1).unwrap().split_once("/").unwrap().1;
+            let filename = path[1..].split_once("/").unwrap().1;
             println!("{:?}",directory);
             println!("{}",filename);
 
