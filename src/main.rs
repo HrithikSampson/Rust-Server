@@ -8,13 +8,16 @@ use std::io::BufReader;
 use std::net::TcpStream;
 use std::format;
 use std::thread;
-pub fn get_dir() -> String {
+pub fn get_dir() -> Option<String> {
     let arguments: Vec<String> = std::env::args().collect();
     let index = arguments
         .iter()
-        .position(|arg| arg == "--directory")
-        .unwrap();
-    arguments[index + 1].to_string()
+        .position(|arg| arg == "--directory");
+        
+    if let Some(max)=index {
+        return Some(arguments[index.unwrap() + 1].to_string())
+    }
+    return None;
 }
 fn main() {
     let listener = TcpListener::bind("127.0.0.1:4221").unwrap();
@@ -28,7 +31,7 @@ fn main() {
         thread::spawn(||handle_connection(stream,directory));
     }
 }
-fn handle_connection(mut stream:TcpStream,directory: String){
+fn handle_connection(mut stream:TcpStream,directory: Option<String>){
     let http_request: Vec<_> = BufReader::new(&mut stream)
                                        .lines()
                                        .map(|el|el.unwrap())
@@ -53,7 +56,7 @@ fn handle_connection(mut stream:TcpStream,directory: String){
         response = format!("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: {}\r\n\r\n{}\r\n",(p.as_str()),q);
     } else if path.starts_with("/files") == true {
         let filename = http_request.get(2).unwrap().split_once("/").unwrap().1;
-        let file_result = File::open(directory+"/"+filename);
+        let file_result = File::open(directory.unwrap()+"/"+filename);
 
         let response = match file_result {
             Ok(mut file) => {
