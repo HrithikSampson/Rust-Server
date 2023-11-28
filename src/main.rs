@@ -73,7 +73,11 @@ fn handle_connection(mut stream:TcpStream,directory: Option<String>){
                 };
             }
             else if let None = directory {
-                let filename = path[1..].split_once("/").unwrap().1;
+                response = "HTTP/1.1 404 Not Found\r\n\r\n".to_string();
+            }
+        }
+        else {
+            let filename = path[1..].split_once("/").unwrap().1;
                 println!("{:?}",directory);
                 println!("{}",filename);
 
@@ -86,10 +90,6 @@ fn handle_connection(mut stream:TcpStream,directory: Option<String>){
                     },
                     Err(_) => "HTTP/1.1 404 Not Found\r\n\r\n".to_string(),
                 };
-            }
-        }
-        else {
-            response = "HTTP/1.1 404 Not Found\r\n\r\n".to_string();
         }
     } else {
         response = "HTTP/1.1 404 Not Found\r\n\r\n".to_string();
