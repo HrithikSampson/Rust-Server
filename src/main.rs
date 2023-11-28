@@ -88,8 +88,8 @@ fn handle_connection(mut stream:TcpStream,directory: Option<String>){
             println!("{}",filepath);
             //let file_result = File::open(&filepath);
             let mut content_buffer = [0;512];
-            stream.read(&mut content_buffer).unwrap();
-            println!("{}",filepath);
+            let sz = stream.read(&mut content_buffer).unwrap();
+            println!("{}",filepath); 
             let contents = String::from_utf8_lossy(&content_buffer);
             //println!("{:?}",file_result);
             // response = match file_result {
