@@ -87,7 +87,7 @@ fn handle_connection(mut stream:TcpStream,directory: Option<String>){
             let filepath = format!("{}{}", directory.unwrap(), filename);
             println!("{}",filepath);
             //let file_result = File::open(&filepath);
-            let mut content_buffer = [0;512];
+            let mut content_buffer = Vec::new();
             let sz = stream.read(&mut content_buffer).unwrap();
             println!("{}",filepath); 
             let contents = String::from_utf8_lossy(&content_buffer);
