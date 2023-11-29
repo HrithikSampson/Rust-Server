@@ -1,4 +1,4 @@
-
+use std::io;
 use std::io::BufRead;
 use std::io::Read;
 use std::io::Write;
@@ -37,20 +37,12 @@ fn main() {
     }
 }
 fn handle_connection(mut stream:TcpStream,directory: Option<String>){
-    let http_request: Vec<_> = BufReader::new(&mut stream)
-                                       .split(b'\n')
-                                       .map(|el|{
-                                            let res = el.unwrap();
-                                            let q = String::from_utf8_lossy(&res);
-                                            q.to_string()
-                                        })
-                                       .collect();
+    //let http_request: Vec<_> = BufReader::new(&mut stream);
+    let mut buf: [u8; 1024] = [0u8;1024];
+    let _sz = stream.read(&mut buf).unwrap();
+    let http_request:Vec<String> = String::from_utf8_lossy(&buf).to_string().split("\n").map(|el|el.to_string()).collect(); 
     println!("{:#?}",http_request); 
     
-    let mut content_buffer = vec![0u8;512];
-    let _sz=stream.read(&mut content_buffer);
-    
-    println!("{:?}",content_buffer);
     let iter = http_request.get(0).unwrap().split(' ').map(|el|el.to_string());
     let bind = iter.collect::<Vec<String>>();
     let path = bind.get(1).unwrap();
@@ -100,14 +92,14 @@ fn handle_connection(mut stream:TcpStream,directory: Option<String>){
             //     Ok(n) => n,
             //     Err(_) => 0
             // };
-            //let content_buffer = http_request.get(http_request.len()-1).unwrap().to_string();
+            let cont = http_request.get(http_request.len()-1).unwrap().to_string();
             //println!("{}",_sz);
             println!("{}",filepath); 
             // let parts: Vec<String> = String::from_utf8_lossy(&content_buffer).lines().map(|line| line.to_string()).collect();
             // println!("{:?}",parts);
             //let contents:Vec<String> = String::from_utf8_lossy(&content_buffer).lines().map(|line| line.to_string()).collect();//parts.get(parts.len()-1).unwrap();
             //println!("{:?}",file_result);
-            let cont = String::from_utf8_lossy(&content_buffer).to_string();
+            //let cont = String::from_utf8_lossy(&content_buffer).to_string();
             // response = match file_result {
             //     Ok(mut file) => {
 
