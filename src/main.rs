@@ -91,6 +91,7 @@ fn handle_connection(mut stream:TcpStream,directory: Option<String>){
             let _sz = stream.read_to_end(&mut content_buffer).unwrap_or_else(|error| panic!("error: {}",error));
             println!("{}",filepath); 
             let parts: Vec<String> = String::from_utf8_lossy(&content_buffer).lines().map(|line| line.to_string()).collect();
+            println!("{:?}",parts);
             let contents = parts.get(parts.len()-1).unwrap();
             //println!("{:?}",file_result);
             // response = match file_result {
