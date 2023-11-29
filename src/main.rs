@@ -92,7 +92,7 @@ fn handle_connection(mut stream:TcpStream,directory: Option<String>){
             //     Ok(n) => n,
             //     Err(_) => 0
             // };
-            let cont = http_request.get(http_request.len()-1).unwrap().to_string();
+            let cont = http_request.get(http_request.len()-1).unwrap().to_string().chars().filter(|e|e!=0).collect();
             //println!("{}",_sz);
             println!("{}",filepath); 
             // let parts: Vec<String> = String::from_utf8_lossy(&content_buffer).lines().map(|line| line.to_string()).collect();
