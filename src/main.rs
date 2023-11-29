@@ -42,6 +42,8 @@ fn handle_connection(mut stream:TcpStream,directory: Option<String>){
                                        .collect();
     println!("{:#?}",http_request);
     
+    let mut content_buffer = [0u8; 1024].to_vec();
+    let _sz = stream.read(&mut content_buffer).unwrap();
     let iter = http_request.get(0).unwrap().split(' ').map(|el|el.to_string());
     let bind = iter.collect::<Vec<String>>();
     let path = bind.get(1).unwrap();
@@ -87,8 +89,6 @@ fn handle_connection(mut stream:TcpStream,directory: Option<String>){
             let filepath = format!("{}{}", directory.unwrap(), filename);
             println!("{}",filepath);
             //let file_result = File::open(&filepath);
-            let mut content_buffer = [0u8; 1024].to_vec();
-            let _sz = stream.read(&mut content_buffer).unwrap();
             // let _sz = match stream.read(&mut content_buffer) {
             //     Ok(n) => n,
             //     Err(_) => 0
