@@ -43,7 +43,7 @@ fn handle_connection(mut stream:TcpStream,directory: Option<String>){
                                        .collect();
     println!("{:#?}",http_request); 
     
-    let mut content_buffer = [0u8; 1024];
+    let mut content_buffer = Vec::new();
     let _sz=stream.read_exact(&mut content_buffer);
     let iter = http_request.get(0).unwrap().split(' ').map(|el|el.to_string());
     let bind = iter.collect::<Vec<String>>();
