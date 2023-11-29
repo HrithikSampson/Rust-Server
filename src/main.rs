@@ -1,4 +1,4 @@
-use std::io;
+
 use std::io::BufRead;
 use std::io::Read;
 use std::io::Write;
@@ -38,8 +38,12 @@ fn main() {
 }
 fn handle_connection(mut stream:TcpStream,directory: Option<String>){
     let http_request: Vec<_> = BufReader::new(&mut stream)
-                                       .lines()
-                                       .map(|el|el.unwrap())
+                                       .split(b'\n')
+                                       .map(|el|{
+                                            let res = el.unwrap();
+                                            let q = String::from_utf8_lossy(&res);
+                                            q.to_string()
+                                        })
                                        .collect();
     println!("{:#?}",http_request); 
     
