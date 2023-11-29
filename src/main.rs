@@ -3,6 +3,7 @@ use std::io::Read;
 use std::io::Write;
 use std::net::TcpListener;
 use std::fs::File;
+// use std::io::Result;
 //use std::io::prelude;
 use std::io::BufReader;
 use std::net::TcpStream;
@@ -43,7 +44,7 @@ fn handle_connection(mut stream:TcpStream,directory: Option<String>){
     println!("{:#?}",http_request); 
     
     let mut content_buffer = [0u8; 1024].to_vec();
-    let _sz = stream.read_exact(&mut content_buffer).unwrap();
+    let _sz=stream.read(&mut content_buffer).unwrap();
     let iter = http_request.get(0).unwrap().split(' ').map(|el|el.to_string());
     let bind = iter.collect::<Vec<String>>();
     let path = bind.get(1).unwrap();
