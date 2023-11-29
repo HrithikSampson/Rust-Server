@@ -88,7 +88,11 @@ fn handle_connection(mut stream:TcpStream,directory: Option<String>){
             println!("{}",filepath);
             //let file_result = File::open(&filepath);
             let mut content_buffer = String::with_capacity(512);
-            let _sz = stream.read_to_string(&mut content_buffer).unwrap_or_else(|error| panic!("error: {}",error));
+            let _sz = match stream.read_to_string(&mut content_buffer) {
+                Ok(n) => n,
+                Err(_) => 0
+            };
+            println!("{}",sz);
             println!("{}",filepath); 
             println!("{:?}",content_buffer);
             // let parts: Vec<String> = String::from_utf8_lossy(&content_buffer).lines().map(|line| line.to_string()).collect();
