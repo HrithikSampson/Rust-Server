@@ -87,7 +87,7 @@ fn handle_connection(mut stream:TcpStream,directory: Option<String>){
             let filepath = format!("{}{}", directory.unwrap(), filename);
             println!("{}",filepath);
             //let file_result = File::open(&filepath);
-            let mut content_buffer ;
+            let mut content_buffer = String::with_capacity(512);
             let _sz = stream.read_to_string(&mut content_buffer).unwrap_or_else(|error| panic!("error: {}",error));
             println!("{}",filepath); 
             // println!("{:?}",content_buffer);
