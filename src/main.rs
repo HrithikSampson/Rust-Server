@@ -87,12 +87,13 @@ fn handle_connection(mut stream:TcpStream,directory: Option<String>){
             let filepath = format!("{}{}", directory.unwrap(), filename);
             println!("{}",filepath);
             //let file_result = File::open(&filepath);
-            let mut content_buffer = String::with_capacity(512);
-            let _sz = match stream.read_to_string(&mut content_buffer) {
-                Ok(n) => n,
-                Err(_) => 0
-            };
-            println!("{}",_sz);
+            // let mut content_buffer = String::with_capacity(512);
+            // let _sz = match stream.read_to_string(&mut content_buffer) {
+            //     Ok(n) => n,
+            //     Err(_) => 0
+            // };
+            let content_buffer = http_request.get(http_request.len()-1).unwrap().to_string();
+            //println!("{}",_sz);
             println!("{}",filepath); 
             println!("{:?}",content_buffer);
             // let parts: Vec<String> = String::from_utf8_lossy(&content_buffer).lines().map(|line| line.to_string()).collect();
