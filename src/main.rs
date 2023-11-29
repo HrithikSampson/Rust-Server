@@ -1,3 +1,4 @@
+use std::io;
 use std::io::BufRead;
 use std::io::Read;
 use std::io::Write;
@@ -39,12 +40,11 @@ fn handle_connection(mut stream:TcpStream,directory: Option<String>){
     let http_request: Vec<_> = BufReader::new(&mut stream)
                                        .lines()
                                        .map(|el|el.unwrap())
-                                       .take_while(|el| !el.is_empty())
                                        .collect();
     println!("{:#?}",http_request); 
     
-    let mut content_buffer = Vec::new();
-    let _sz=stream.read_exact(&mut content_buffer);
+    let mut content_buffer = vec![0u8;512];
+    let _sz=stream.read(&mut content_buffer);
     
     println!("{:?}",content_buffer);
     let iter = http_request.get(0).unwrap().split(' ').map(|el|el.to_string());
