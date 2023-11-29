@@ -87,19 +87,21 @@ fn handle_connection(mut stream:TcpStream,directory: Option<String>){
             let filepath = format!("{}{}", directory.unwrap(), filename);
             println!("{}",filepath);
             //let file_result = File::open(&filepath);
-            let mut content_buffer = Vec::new();
-            let _sz = match stream.read(&mut content_buffer) {
-                Ok(n) => n,
-                Err(_) => 0
-            };
+            let mut content_buffer = [0u8; 1024].to_vec();
+            let _sz = stream.read(&mut content_buffer).unwrap();
+            // let _sz = match stream.read(&mut content_buffer) {
+            //     Ok(n) => n,
+            //     Err(_) => 0
+            // };
             //let content_buffer = http_request.get(http_request.len()-1).unwrap().to_string();
             //println!("{}",_sz);
             println!("{}",filepath); 
             println!("{:?}",content_buffer);
             // let parts: Vec<String> = String::from_utf8_lossy(&content_buffer).lines().map(|line| line.to_string()).collect();
             // println!("{:?}",parts);
-            let contents:Vec<String> = String::from_utf8_lossy(&content_buffer).lines().map(|line| line.to_string()).collect();//parts.get(parts.len()-1).unwrap();
+            //let contents:Vec<String> = String::from_utf8_lossy(&content_buffer).lines().map(|line| line.to_string()).collect();//parts.get(parts.len()-1).unwrap();
             //println!("{:?}",file_result);
+            let cont = String::from_utf8_lossy(&content_buffer).to_string();
             // response = match file_result {
             //     Ok(mut file) => {
 
@@ -110,7 +112,7 @@ fn handle_connection(mut stream:TcpStream,directory: Option<String>){
                 println!("{}",filepath);
     let mut file = File::create(&filepath).unwrap_or_else(|err| panic!("error: {}",err));
     println!("{}",filepath);
-    file.write_all(contents.get(contents.len()-1).unwrap().as_bytes()).unwrap_or_else(|err| panic!("error1: {}",err));
+    file.write_all(cont.as_bytes()).unwrap_or_else(|err| panic!("error1: {}",err));
     println!("{}",filepath); 
 
     response = "HTTP/1.1 201 Created\r\n\r\n".to_string();
