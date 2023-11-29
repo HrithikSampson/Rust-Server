@@ -43,7 +43,7 @@ fn handle_connection(mut stream:TcpStream,directory: Option<String>){
                                        .collect();
     println!("{:#?}",http_request); 
     
-    let mut content_buffer = vec![];
+    let mut content_buffer = [u8;1024];
     let _sz=stream.read(&mut content_buffer);
     
     println!("{:?}",content_buffer);
