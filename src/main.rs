@@ -51,7 +51,7 @@ fn handle_connection(mut stream:TcpStream,directory: Option<String>){
     let bind = iter.collect::<Vec<String>>();
     let path = bind.get(1).unwrap();
     let method: &String = bind.get(0).unwrap();
-    let mut response= String::new();
+    let mut response= String::new(); 
     if path.as_str() == "/"{
         response = "HTTP/1.1 200 OK\r\n\r\n".to_string();
     } else if path.starts_with("/echo") == true {
