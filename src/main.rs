@@ -40,7 +40,7 @@ fn handle_connection(mut stream:TcpStream,directory: Option<String>){
                                        .map(|el|el.unwrap())
                                        .take_while(|el| !el.is_empty())
                                        .collect();
-    println!("{:#?}",http_request);
+    println!("{:#?}",http_request); 
     
     let mut content_buffer = [0u8; 1024].to_vec();
     let _sz = stream.read_exact(&mut content_buffer).unwrap();
