@@ -56,7 +56,7 @@ fn handle_connection(mut stream:TcpStream,directory: Option<String>){
         response = format!("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: {}\r\n\r\n{}\r\n",(p.as_str()),q.1);
     } else if path.starts_with("/user-agent") == true {
         let q = http_request.get(2).unwrap().split_once(" ").unwrap().1;
-        let p = q.len().to_string();
+        let p = (q.len()-1).to_string();
         response = format!("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: {}\r\n\r\n{}\r\n",(p.as_str()),q);
     } else if path.starts_with("/files") == true {
         println!("{}",method);
